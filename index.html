@@ -22,6 +22,10 @@
                     <i class="fas fa-chart-line"></i>
                     Dashboard
                 </li>
+                <li data-page="yearly">
+                    <i class="fas fa-calendar"></i>
+                    Visão Anual
+                </li>
                 <li data-page="transactions">
                     <i class="fas fa-exchange-alt"></i>
                     Transações
@@ -38,108 +42,146 @@
                     <i class="fas fa-bullseye"></i>
                     Metas
                 </li>
+                <li data-page="banks">
+                    <i class="fas fa-university"></i>
+                    Contas Bancárias
+                </li>
             </ul>
         </nav>
 
         <!-- Conteúdo Principal -->
         <main class="content">
             <!-- Dashboard -->
-          <section id="dashboard" class="page active">
-    <div class="dashboard-header">
-        <h2>Dashboard</h2>
-        <!-- Barra de Ações Principal -->
-        <div class="main-actions">
-            <button class="action-btn primary" onclick="openTransactionModal('expense')">
-                <i class="fas fa-minus-circle"></i> Nova Despesa
-            </button>
-            <button class="action-btn success" onclick="openTransactionModal('income')">
-                <i class="fas fa-plus-circle"></i> Nova Receita
-            </button>
-            <button class="action-btn warning" onclick="openCreditCardExpenseModal()">
-                <i class="fas fa-credit-card"></i> Despesa no Cartão
-            </button>
-            <button class="action-btn info" onclick="openInvestmentModal()">
-                <i class="fas fa-chart-line"></i> Novo Investimento
-            </button>
-            <button class="action-btn secondary" onclick="openGoalModal()">
-                <i class="fas fa-bullseye"></i> Nova Meta
-            </button>
-        </div>
-    </div>
+            <section id="dashboard" class="page active">
+                <div class="dashboard-header">
+                    <h2>Dashboard</h2>
+                    <div class="view-selector">
+                        <button class="view-button active" data-view="overview">Visão Geral</button>
+                        <button class="view-button" data-view="daily">Diário</button>
+                        <button class="view-button" data-view="monthly">Mensal</button>
+                    </div>
+                </div>
 
                 <!-- Visão Geral -->
                 <div class="dashboard-view active" id="overview">
                     <div class="action-buttons">
-<!-- Botões de Ação Rápida -->
-<div class="quick-actions">
-    <button class="action-btn" onclick="openTransactionModal('expense')">
-        <i class="fas fa-minus-circle"></i> Nova Despesa
-    </button>
-    <button class="action-btn" onclick="openTransactionModal('income')">
-        <i class="fas fa-plus-circle"></i> Nova Receita
-    </button>
-    <button class="action-btn" onclick="openCreditCardExpenseModal()">
-        <i class="fas fa-credit-card"></i> Despesa no Cartão
-    </button>
-</div>
                         <button class="action-btn primary" onclick="openTransactionModal()">
                             <i class="fas fa-plus"></i> Nova Transação
                         </button>
-                        <button class="action-btn" onclick="openCardModal()">
-                            <i class="fas fa-credit-card"></i> Novo Cartão
+                        <button class="action-btn" onclick="connectNewBank()">
+                            <i class="fas fa-plug"></i> Conectar Banco
                         </button>
-                        <button class="action-btn" onclick="openInvestmentModal()">
-                            <i class="fas fa-piggy-bank"></i> Novo Investimento
-                        </button>
-                        <button class="action-btn" onclick="openGoalModal()">
-                            <i class="fas fa-bullseye"></i> Nova Meta
+                        <button class="action-btn" onclick="exportData()">
+                            <i class="fas fa-file-export"></i> Exportar Dados
                         </button>
                     </div>
 
                     <div class="cards">
                         <div class="card">
-                            <h3>Patrimônio Total</h3>
+                            <h3>Saldo Total</h3>
                             <p class="balance">R$ 0,00</p>
                             <small class="trend positive">+5% em relação ao período anterior</small>
+                            <div class="card-actions">
+                                <button class="card-btn" onclick="showBalanceDetails()">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="card-btn" onclick="updateBalance()">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </div>
                         </div>
-
                         <div class="card">
                             <h3>Receitas</h3>
                             <p class="income">R$ 0,00</p>
                             <small class="trend positive">+3% em relação ao período anterior</small>
+                            <div class="card-actions">
+                                <button class="card-btn" onclick="addIncome()">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                                <button class="card-btn" onclick="showIncomeDetails()">
+                                    <i class="fas fa-list"></i>
+                                </button>
+                            </div>
                         </div>
-
                         <div class="card">
                             <h3>Despesas</h3>
                             <p class="expenses">R$ 0,00</p>
                             <small class="trend negative">+2% em relação ao período anterior</small>
+                            <div class="card-actions">
+                                <button class="card-btn" onclick="addExpense()">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                                <button class="card-btn" onclick="showExpenseDetails()">
+                                    <i class="fas fa-list"></i>
+                                </button>
+                            </div>
                         </div>
-
                         <div class="card">
                             <h3>Investimentos</h3>
                             <p class="investments">R$ 0,00</p>
-                            <small class="trend positive investments-trend">+8% total</small>
+                            <small class="trend positive">+8% em relação ao período anterior</small>
+                            <div class="card-actions">
+                                <button class="card-btn" onclick="addInvestment()">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                                <button class="card-btn" onclick="showInvestmentDetails()">
+                                    <i class="fas fa-chart-line"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Integração Bancária -->
+                    <div class="bank-integration">
+                        <h3>Contas Conectadas</h3>
+                        <div class="connected-banks" id="connectedBanksList">
+                            <!-- Bancos conectados serão inseridos aqui -->
+                        </div>
+                        <div class="sync-status">
+                            <span>Última sincronização: <time id="lastSync">Nunca</time></span>
+                            <button class="action-btn" onclick="syncBankData()">
+                                <i class="fas fa-sync"></i> Sincronizar
+                            </button>
                         </div>
                     </div>
 
                     <div class="charts-container">
                         <div class="chart-card">
-                            <h3>Evolução do Patrimônio</h3>
+                            <h3>Evolução do Saldo</h3>
                             <canvas id="balanceChart"></canvas>
+                            <div class="chart-actions">
+                                <button class="chart-btn" onclick="changeChartPeriod('balance', 'week')">Semana</button>
+                                <button class="chart-btn" onclick="changeChartPeriod('balance', 'month')">Mês</button>
+                                <button class="chart-btn" onclick="changeChartPeriod('balance', 'year')">Ano</button>
+                            </div>
                         </div>
                         <div class="chart-card">
                             <h3>Distribuição de Gastos</h3>
                             <canvas id="expensesChart"></canvas>
+                            <div class="chart-actions">
+                                <button class="chart-btn" onclick="updateExpensesChart('category')">Categorias</button>
+                                <button class="chart-btn" onclick="updateExpensesChart('account')">Contas</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <!-- Visão Diária -->
+
+                             <!-- Visão Diária -->
                 <div class="dashboard-view" id="daily">
+                    <div class="action-buttons">
+                        <button class="action-btn primary" onclick="openTransactionModal('daily')">
+                            <i class="fas fa-plus"></i> Nova Transação
+                        </button>
+                        <button class="action-btn" onclick="exportDailyReport()">
+                            <i class="fas fa-file-export"></i> Exportar Relatório
+                        </button>
+                    </div>
+
                     <div class="date-navigator">
                         <button class="nav-btn" onclick="previousDay()">
                             <i class="fas fa-chevron-left"></i>
                         </button>
-                        <h3 id="currentDate">Hoje</h3>
+                        <h3 id="currentDate">Hoje, 15 de Janeiro</h3>
                         <button class="nav-btn" onclick="nextDay()">
                             <i class="fas fa-chevron-right"></i>
                         </button>
@@ -147,39 +189,94 @@
 
                     <div class="cards">
                         <div class="card">
-                            <h3>Saldo do Dia</h3>
-                            <p class="balance" id="dailyBalance">R$ 0,00</p>
+                            <h3>Gastos Hoje</h3>
+                            <p class="expenses" id="dailyExpenses">R$ 0,00</p>
+                            <div class="budget-indicator">
+                                <div class="progress-bar">
+                                    <div class="progress" style="width: 65%"></div>
+                                </div>
+                                <small>65% do limite diário</small>
+                            </div>
+                            <div class="card-actions">
+                                <button class="card-btn" onclick="setDailyBudget()">
+                                    <i class="fas fa-cog"></i>
+                                </button>
+                                <button class="card-btn" onclick="showDailyExpenseDetails()">
+                                    <i class="fas fa-list"></i>
+                                </button>
+                            </div>
                         </div>
                         <div class="card">
                             <h3>Receitas Hoje</h3>
                             <p class="income" id="dailyIncome">R$ 0,00</p>
+                            <div class="card-actions">
+                                <button class="card-btn" onclick="addDailyIncome()">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                                <button class="card-btn" onclick="showDailyIncomeDetails()">
+                                    <i class="fas fa-list"></i>
+                                </button>
+                            </div>
                         </div>
                         <div class="card">
-                            <h3>Despesas Hoje</h3>
-                            <p class="expenses" id="dailyExpenses">R$ 0,00</p>
+                            <h3>Saldo do Dia</h3>
+                            <p class="balance" id="dailyBalance">R$ 0,00</p>
+                            <div class="card-actions">
+                                <button class="card-btn" onclick="reconcileDaily()">
+                                    <i class="fas fa-check-circle"></i>
+                                </button>
+                                <button class="card-btn" onclick="showDailyBalanceDetails()">
+                                    <i class="fas fa-info-circle"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="transactions-list">
-                        <h3>Transações de Hoje</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Hora</th>
-                                    <th>Descrição</th>
-                                    <th>Categoria</th>
-                                    <th>Valor</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody id="dailyTransactionsTable">
-                            </tbody>
-                        </table>
+                    <div class="transactions-today">
+                        <div class="section-header">
+                            <h3>Transações de Hoje</h3>
+                            <div class="header-actions">
+                                <button class="action-btn" onclick="filterTransactions()">
+                                    <i class="fas fa-filter"></i> Filtrar
+                                </button>
+                                <button class="action-btn" onclick="sortTransactions()">
+                                    <i class="fas fa-sort"></i> Ordenar
+                                </button>
+                            </div>
+                        </div>
+                        <div class="transactions-list">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Hora</th>
+                                        <th>Descrição</th>
+                                        <th>Categoria</th>
+                                        <th>Valor</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dailyTransactionsTable">
+                                    <!-- Transações serão inseridas aqui -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Visão Mensal -->
                 <div class="dashboard-view" id="monthly">
+                    <div class="action-buttons">
+                        <button class="action-btn primary" onclick="openTransactionModal('monthly')">
+                            <i class="fas fa-plus"></i> Nova Transação
+                        </button>
+                        <button class="action-btn" onclick="setBudget()">
+                            <i class="fas fa-sliders-h"></i> Definir Orçamento
+                        </button>
+                        <button class="action-btn" onclick="exportMonthlyReport()">
+                            <i class="fas fa-file-export"></i> Exportar Relatório
+                        </button>
+                    </div>
+
                     <div class="month-navigator">
                         <button class="nav-btn" onclick="previousMonth()">
                             <i class="fas fa-chevron-left"></i>
@@ -195,360 +292,104 @@
                             <h3>Total do Mês</h3>
                             <p class="balance" id="monthlyTotal">R$ 0,00</p>
                             <small class="comparison">vs. R$ 3.500,00 mês anterior</small>
+                            <div class="card-actions">
+                                <button class="card-btn" onclick="showMonthlyComparison()">
+                                    <i class="fas fa-chart-bar"></i>
+                                </button>
+                                <button class="card-btn" onclick="showMonthlyDetails()">
+                                    <i class="fas fa-info-circle"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <h3>Gastos do Mês</h3>
+                            <p class="expenses" id="monthlyExpenses">R$ 0,00</p>
+                            <div class="budget-indicator">
+                                <div class="progress-bar">
+                                    <div class="progress" style="width: 75%"></div>
+                                </div>
+                                <small>75% do orçamento mensal</small>
+                            </div>
+                            <div class="card-actions">
+                                <button class="card-btn" onclick="setMonthlyBudget()">
+                                    <i class="fas fa-cog"></i>
+                                </button>
+                                <button class="card-btn" onclick="showMonthlyExpenseDetails()">
+                                    <i class="fas fa-list"></i>
+                                </button>
+                            </div>
                         </div>
                         <div class="card">
                             <h3>Receitas do Mês</h3>
                             <p class="income" id="monthlyIncome">R$ 0,00</p>
-                        </div>
-                        <div class="card">
-                            <h3>Despesas do Mês</h3>
-                            <p class="expenses" id="monthlyExpenses">R$ 0,00</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Seção de Investimentos -->
-            <section id="investments" class="page">
-                <div class="section-header">
-                    <h2>Investimentos</h2>
-                    <button class="action-btn primary" onclick="openInvestmentModal()">
-                        <i class="fas fa-plus"></i> Novo Investimento
-                    </button>
-                </div>
-
-                <div class="investment-summary">
-                    <div class="cards">
-                        <div class="card">
-                            <h3>Total Investido</h3>
-                            <p class="balance" id="totalInvested">R$ 0,00</p>
-                            <small class="trend positive">Rendimento total: <span id="totalReturn">0,00%</span></small>
-                        </div>
-                        <div class="card">
-                            <h3>Rendimento Mensal</h3>
-                            <p class="income" id="monthlyReturn">R$ 0,00</p>
-                            <small>Mês atual</small>
-                        </div>
-                        <div class="card">
-                            <h3>Próximos Vencimentos</h3>
-                            <p class="warning" id="upcomingMaturity">0</p>
-                            <small>Nos próximos 30 dias</small>
+                            <div class="card-actions">
+                                <button class="card-btn" onclick="addMonthlyIncome()">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                                <button class="card-btn" onclick="showMonthlyIncomeDetails()">
+                                    <i class="fas fa-list"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="investments-list">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Investimento</th>
-                                <th>Tipo</th>
-                                <th>Valor Atual</th>
-                                <th>Rentabilidade</th>
-                                <th>Vencimento</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="investmentsTable">
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-            <!-- Seção de Cartões -->
-            <section id="cards" class="page">
-                <div class="section-header">
-                    <h2>Cartões</h2>
-                    <button class="action-btn primary" onclick="openCardModal()">
-                        <i class="fas fa-plus"></i> Novo Cartão
-                    </button>
-                </div>
-                <div id="cardsList" class="cards-grid">
-                    <!-- Cards serão inseridos aqui via JavaScript -->
-                </div>
-            </section>
-
-            <!-- Seção de Metas -->
-            <section id="goals" class="page">
-                <div class="section-header">
-                    <h2>Metas</h2>
-                    <button class="action-btn primary" onclick="openGoalModal()">
-                        <i class="fas fa-plus"></i> Nova Meta
-                    </button>
-                </div>
-                <div id="goalsList" class="goals-grid">
-                    <!-- Metas serão inseridas aqui via JavaScript -->
+                    <div class="charts-container">
+                        <div class="chart-card">
+                            <h3>Gastos por Categoria</h3>
+                            <canvas id="monthlyExpensesChart"></canvas>
+                            <div class="chart-actions">
+                                <button class="chart-btn" onclick="updateMonthlyChart('category')">Por Categoria</button>
+                                <button class="chart-btn" onclick="updateMonthlyChart('daily')">Por Dia</button>
+                            </div>
+                        </div>
+                        <div class="chart-card">
+                            <h3>Evolução Diária</h3>
+                            <canvas id="monthlyEvolutionChart"></canvas>
+                            <div class="chart-actions">
+                                <button class="chart-btn" onclick="compareWithLastMonth()">Comparar Meses</button>
+                                <button class="chart-btn" onclick="showTrends()">Ver Tendências</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
         </main>
     </div>
 
+    <!-- Modais -->
     <!-- Modal de Transação -->
     <div id="transactionModal" class="modal">
-        <div class="modal-content">
-            <h3>Nova Transação</h3>
-            <form id="transactionForm">
-                <div class="form-group">
-                    <label>Descrição:</label>
-                    <input type="text" id="description" required>
-                </div>
-                <div class="form-group">
-                    <label>Valor:</label>
-                    <input type="number" id="amount" step="0.01" required>
-                </div>
-                <div class="form-group">
-                    <label>Tipo:</label>
-                    <select id="type" required>
-                        <option value="income">Receita</option>
-                        <option value="expense">Despesa</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Categoria:</label>
-                    <select id="category" required>
-                        <option value="salary">Salário</option>
-                        <option value="food">Alimentação</option>
-                        <option value="transport">Transporte</option>
-                        <option value="housing">Moradia</option>
-                        <option value="others">Outros</option>
-                    </select>
-                </div>
-                <div class="button-group">
-                    <button type="submit">Salvar</button>
-                    <button type="button" onclick="closeTransactionModal()">Cancelar</button>
-                </div>
-            </form>
-        </div>
+        <!-- ... (mesmo código do modal anterior) ... -->
     </div>
 
-    <!-- Modal de Investimento -->
-    <div id="investmentModal" class="modal">
+    <!-- Modal de Conexão Bancária -->
+    <div id="bankConnectionModal" class="modal">
         <div class="modal-content">
-            <h3>Novo Investimento</h3>
-            <form id="investmentForm">
-                <div class="form-group">
-                    <label>Tipo de Investimento:</label>
-                    <select id="investmentType" required onchange="updateInvestmentFields()">
-                        <option value="cdb">CDB</option>
-                        <option value="tesouro">Tesouro Direto</option>
-                        <option value="poupanca">Poupança</option>
-                        <option value="fundo">Fundo de Investimento</option>
-                        <option value="acoes">Ações</option>
-                    </select>
+            <h3>Conectar Banco</h3>
+            <div class="bank-list">
+                <div class="bank-item" onclick="startBankConnection('nubank')">
+                    <img src="bank-icons/nubank.png" alt="Nubank">
+                    <span>Nubank</span>
                 </div>
-                <div class="form-group">
-                    <label>Nome/Descrição:</label>
-                    <input type="text" id="investmentName" required>
+                <div class="bank-item" onclick="startBankConnection('itau')">
+                    <img src="bank-icons/itau.png" alt="Itaú">
+                    <span>Itaú</span>
                 </div>
-                <div class="form-group">
-                    <label>Valor Investido:</label>
-                    <input type="number" id="investmentAmount" step="0.01" required>
+                <div class="bank-item" onclick="startBankConnection('bradesco')">
+                    <img src="bank-icons/bradesco.png" alt="Bradesco">
+                    <span>Bradesco</span>
                 </div>
-                <div class="form-group">
-                    <label>Data do Investimento:</label>
-                    <input type="date" id="investmentDate" required>
+                <div class="bank-item" onclick="startBankConnection('santander')">
+                    <img src="bank-icons/santander.png" alt="Santander">
+                    <span>Santander</span>
                 </div>
-                <div class="form-group">
-                    <label>Rentabilidade (% ao ano):</label>
-                    <input type="number" id="investmentRate" step="0.01" required>
-                </div>
-                <div class="form-group">
-                    <label>Prazo de Vencimento:</label>
-                    <input type="date" id="investmentMaturity" required>
-                </div>
-                <div class="form-group">
-                    <label>Liquidez:</label>
-                    <select id="investmentLiquidity" required>
-                        <option value="daily">Diária</option>
-                        <option value="maturity">No Vencimento</option>
-                        <option value="custom">Carência Personalizada</option>
-                    </select>
-                </div>
-                <div class="form-group" id="customGracePeriod" style="display: none;">
-                    <label>Período de Carência (dias):</label>
-                    <input type="number" id="gracePeriod" min="0">
-                </div>
-                <div class="form-group">
-                    <label>Condições de Resgate:</label>
-                    <textarea id="investmentConditions" rows="3"></textarea>
-                </div>
-                <div class="button-group">
-                    <button type="submit">Salvar</button>
-                    <button type="button" onclick="closeInvestmentModal()">Cancelar</button>
-                </div>
-            </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeBankModal()">Cancelar</button>
+            </div>
         </div>
     </div>
-    <!-- Modal de Cartão -->
-    <div id="cardModal" class="modal">
-        <div class="modal-content">
-            <h3>Novo Cartão</h3>
-            <form id="cardForm">
-                <div class="form-group">
-                    <label>Nome do Cartão:</label>
-                    <input type="text" id="cardName" required>
-                </div>
-                <div class="form-group">
-                    <label>Limite:</label>
-                    <input type="number" id="cardLimit" step="0.01" required>
-                </div>
-                <div class="form-group">
-                    <label>Data de Fechamento:</label>
-                    <input type="number" id="closingDay" min="1" max="31" required>
-                </div>
-                <div class="button-group">
-                    <button type="submit">Salvar</button>
-                    <button type="button" onclick="closeCardModal()">Cancelar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal de Meta -->
-    <div id="goalModal" class="modal">
-        <div class="modal-content">
-            <h3>Nova Meta</h3>
-            <form id="goalForm">
-                <div class="form-group">
-                    <label>Descrição da Meta:</label>
-                    <input type="text" id="goalDescription" required>
-                </div>
-                <div class="form-group">
-                    <label>Valor Total:</label>
-                    <input type="number" id="goalAmount" step="0.01" required>
-                </div>
-                <div class="form-group">
-                    <label>Data Limite:</label>
-                    <input type="date" id="goalDate" required>
-                </div>
-                <div class="form-group">
-                    <label>Categoria:</label>
-                    <select id="goalCategory" required>
-                        <option value="savings">Poupança</option>
-                        <option value="investment">Investimento</option>
-                        <option value="purchase">Compra</option>
-                        <option value="travel">Viagem</option>
-                        <option value="others">Outros</option>
-                    </select>
-                </div>
-                <div class="button-group">
-                    <button type="submit">Salvar</button>
-                    <button type="button" onclick="closeGoalModal()">Cancelar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Notificações -->
-    <div id="notificationContainer" class="notification-container"></div>
 
     <script src="script.js"></script>
-</body>
-</html>
-    <!-- Modal de Cartão -->
-    <div id="cardModal" class="modal">
-        <div class="modal-content">
-            <h3>Novo Cartão</h3>
-            <form id="cardForm">
-                <div class="form-group">
-                    <label>Nome do Cartão:</label>
-                    <input type="text" id="cardName" required>
-                </div>
-                <div class="form-group">
-                    <label>Limite:</label>
-                    <input type="number" id="cardLimit" step="0.01" required>
-                </div>
-                <div class="form-group">
-                    <label>Data de Fechamento:</label>
-                    <input type="number" id="closingDay" min="1" max="31" required>
-                </div>
-                <div class="button-group">
-                    <button type="submit">Salvar</button>
-                    <button type="button" onclick="closeCardModal()">Cancelar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal de Meta -->
-    <div id="goalModal" class="modal">
-        <div class="modal-content">
-            <h3>Nova Meta</h3>
-            <form id="goalForm">
-                <div class="form-group">
-                    <label>Descrição da Meta:</label>
-                    <input type="text" id="goalDescription" required>
-                </div>
-                <div class="form-group">
-                    <label>Valor Total:</label>
-                    <input type="number" id="goalAmount" step="0.01" required>
-                </div>
-                <div class="form-group">
-                    <label>Data Limite:</label>
-                    <input type="date" id="goalDate" required>
-                </div>
-                <div class="form-group">
-                    <label>Categoria:</label>
-                    <select id="goalCategory" required>
-                        <option value="savings">Poupança</option>
-                        <option value="investment">Investimento</option>
-                        <option value="purchase">Compra</option>
-                        <option value="travel">Viagem</option>
-                        <option value="others">Outros</option>
-                    </select>
-                </div>
-                <div class="button-group">
-                    <button type="submit">Salvar</button>
-                    <button type="button" onclick="closeGoalModal()">Cancelar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Notificações -->
-    <div id="notificationContainer" class="notification-container"></div>
-
-    <script src="script.js"></script>
-<!-- Modal de Despesa no Cartão -->
-<div id="creditCardExpenseModal" class="modal">
-    <div class="modal-content">
-        <h3>Nova Despesa no Cartão</h3>
-        <form id="creditCardExpenseForm">
-            <div class="form-group">
-                <label>Cartão:</label>
-                <select id="creditCardSelect" required>
-                    <!-- Será preenchido via JavaScript -->
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Descrição:</label>
-                <input type="text" id="ccExpenseDescription" required>
-            </div>
-            <div class="form-group">
-                <label>Valor:</label>
-                <input type="number" id="ccExpenseAmount" step="0.01" required>
-            </div>
-            <div class="form-group">
-                <label>Categoria:</label>
-                <select id="ccExpenseCategory" required>
-                    <option value="food">Alimentação</option>
-                    <option value="transport">Transporte</option>
-                    <option value="shopping">Compras</option>
-                    <option value="entertainment">Entretenimento</option>
-                    <option value="health">Saúde</option>
-                    <option value="education">Educação</option>
-                    <option value="others">Outros</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Número de Parcelas:</label>
-                <input type="number" id="ccInstallments" min="1" value="1" required>
-            </div>
-            <div class="button-group">
-                <button type="submit">Salvar</button>
-                <button type="button" onclick="closeCreditCardExpenseModal()">Cancelar</button>
-            </div>
-        </form>
-    </div>
-</div>
 </body>
 </html>
