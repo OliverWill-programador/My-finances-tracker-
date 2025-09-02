@@ -22,6 +22,14 @@
                     <i class="fas fa-chart-line"></i>
                     Dashboard
                 </li>
+                <li data-page="daily">
+                    <i class="fas fa-calendar-day"></i>
+                    Visão Diária
+                </li>
+                <li data-page="monthly">
+                    <i class="fas fa-calendar-alt"></i>
+                    Visão Mensal
+                </li>
                 <li data-page="yearly">
                     <i class="fas fa-calendar"></i>
                     Visão Anual
@@ -42,353 +50,203 @@
                     <i class="fas fa-bullseye"></i>
                     Metas
                 </li>
-                <li data-page="banks">
-                    <i class="fas fa-university"></i>
-                    Contas Bancárias
-                </li>
             </ul>
         </nav>
 
         <!-- Conteúdo Principal -->
         <main class="content">
-            <!-- Dashboard -->
+            <!-- Dashboard Geral -->
             <section id="dashboard" class="page active">
-                <div class="dashboard-header">
-                    <h2>Dashboard</h2>
-                    <div class="view-selector">
-                        <button class="view-button active" data-view="overview">Visão Geral</button>
-                        <button class="view-button" data-view="daily">Diário</button>
-                        <button class="view-button" data-view="monthly">Mensal</button>
+                <h2>Dashboard Geral</h2>
+                <div class="period-selector">
+                    <button class="period-btn active" data-period="day">Hoje</button>
+                    <button class="period-btn" data-period="month">Este Mês</button>
+                    <button class="period-btn" data-period="year">Este Ano</button>
+                </div>
+
+                <div class="cards">
+                    <div class="card">
+                        <h3>Saldo Total</h3>
+                        <p class="balance">R$ 0,00</p>
+                        <small class="trend positive">+5% em relação ao período anterior</small>
+                    </div>
+                    <div class="card">
+                        <h3>Receitas</h3>
+                        <p class="income">R$ 0,00</p>
+                        <small class="trend positive">+3% em relação ao período anterior</small>
+                    </div>
+                    <div class="card">
+                        <h3>Despesas</h3>
+                        <p class="expenses">R$ 0,00</p>
+                        <small class="trend negative">+2% em relação ao período anterior</small>
+                    </div>
+                    <div class="card">
+                        <h3>Investimentos</h3>
+                        <p class="investments">R$ 0,00</p>
+                        <small class="trend positive">+8% em relação ao período anterior</small>
                     </div>
                 </div>
 
-                <!-- Visão Geral -->
-                <div class="dashboard-view active" id="overview">
-                    <div class="action-buttons">
-                        <button class="action-btn primary" onclick="openTransactionModal()">
-                            <i class="fas fa-plus"></i> Nova Transação
-                        </button>
-                        <button class="action-btn" onclick="connectNewBank()">
-                            <i class="fas fa-plug"></i> Conectar Banco
-                        </button>
-                        <button class="action-btn" onclick="exportData()">
-                            <i class="fas fa-file-export"></i> Exportar Dados
-                        </button>
+                <div class="charts-container">
+                    <div class="chart-card">
+                        <h3>Evolução do Saldo</h3>
+                        <canvas id="balanceChart"></canvas>
                     </div>
-
-                    <div class="cards">
-                        <div class="card">
-                            <h3>Saldo Total</h3>
-                            <p class="balance">R$ 0,00</p>
-                            <small class="trend positive">+5% em relação ao período anterior</small>
-                            <div class="card-actions">
-                                <button class="card-btn" onclick="showBalanceDetails()">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                                <button class="card-btn" onclick="updateBalance()">
-                                    <i class="fas fa-sync-alt"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <h3>Receitas</h3>
-                            <p class="income">R$ 0,00</p>
-                            <small class="trend positive">+3% em relação ao período anterior</small>
-                            <div class="card-actions">
-                                <button class="card-btn" onclick="addIncome()">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                                <button class="card-btn" onclick="showIncomeDetails()">
-                                    <i class="fas fa-list"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <h3>Despesas</h3>
-                            <p class="expenses">R$ 0,00</p>
-                            <small class="trend negative">+2% em relação ao período anterior</small>
-                            <div class="card-actions">
-                                <button class="card-btn" onclick="addExpense()">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                                <button class="card-btn" onclick="showExpenseDetails()">
-                                    <i class="fas fa-list"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <h3>Investimentos</h3>
-                            <p class="investments">R$ 0,00</p>
-                            <small class="trend positive">+8% em relação ao período anterior</small>
-                            <div class="card-actions">
-                                <button class="card-btn" onclick="addInvestment()">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                                <button class="card-btn" onclick="showInvestmentDetails()">
-                                    <i class="fas fa-chart-line"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Integração Bancária -->
-                    <div class="bank-integration">
-                        <h3>Contas Conectadas</h3>
-                        <div class="connected-banks" id="connectedBanksList">
-                            <!-- Bancos conectados serão inseridos aqui -->
-                        </div>
-                        <div class="sync-status">
-                            <span>Última sincronização: <time id="lastSync">Nunca</time></span>
-                            <button class="action-btn" onclick="syncBankData()">
-                                <i class="fas fa-sync"></i> Sincronizar
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="charts-container">
-                        <div class="chart-card">
-                            <h3>Evolução do Saldo</h3>
-                            <canvas id="balanceChart"></canvas>
-                            <div class="chart-actions">
-                                <button class="chart-btn" onclick="changeChartPeriod('balance', 'week')">Semana</button>
-                                <button class="chart-btn" onclick="changeChartPeriod('balance', 'month')">Mês</button>
-                                <button class="chart-btn" onclick="changeChartPeriod('balance', 'year')">Ano</button>
-                            </div>
-                        </div>
-                        <div class="chart-card">
-                            <h3>Distribuição de Gastos</h3>
-                            <canvas id="expensesChart"></canvas>
-                            <div class="chart-actions">
-                                <button class="chart-btn" onclick="updateExpensesChart('category')">Categorias</button>
-                                <button class="chart-btn" onclick="updateExpensesChart('account')">Contas</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                             <!-- Visão Diária -->
-                <div class="dashboard-view" id="daily">
-                    <div class="action-buttons">
-                        <button class="action-btn primary" onclick="openTransactionModal('daily')">
-                            <i class="fas fa-plus"></i> Nova Transação
-                        </button>
-                        <button class="action-btn" onclick="exportDailyReport()">
-                            <i class="fas fa-file-export"></i> Exportar Relatório
-                        </button>
-                    </div>
-
-                    <div class="date-navigator">
-                        <button class="nav-btn" onclick="previousDay()">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <h3 id="currentDate">Hoje, 15 de Janeiro</h3>
-                        <button class="nav-btn" onclick="nextDay()">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                    </div>
-
-                    <div class="cards">
-                        <div class="card">
-                            <h3>Gastos Hoje</h3>
-                            <p class="expenses" id="dailyExpenses">R$ 0,00</p>
-                            <div class="budget-indicator">
-                                <div class="progress-bar">
-                                    <div class="progress" style="width: 65%"></div>
-                                </div>
-                                <small>65% do limite diário</small>
-                            </div>
-                            <div class="card-actions">
-                                <button class="card-btn" onclick="setDailyBudget()">
-                                    <i class="fas fa-cog"></i>
-                                </button>
-                                <button class="card-btn" onclick="showDailyExpenseDetails()">
-                                    <i class="fas fa-list"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <h3>Receitas Hoje</h3>
-                            <p class="income" id="dailyIncome">R$ 0,00</p>
-                            <div class="card-actions">
-                                <button class="card-btn" onclick="addDailyIncome()">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                                <button class="card-btn" onclick="showDailyIncomeDetails()">
-                                    <i class="fas fa-list"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <h3>Saldo do Dia</h3>
-                            <p class="balance" id="dailyBalance">R$ 0,00</p>
-                            <div class="card-actions">
-                                <button class="card-btn" onclick="reconcileDaily()">
-                                    <i class="fas fa-check-circle"></i>
-                                </button>
-                                <button class="card-btn" onclick="showDailyBalanceDetails()">
-                                    <i class="fas fa-info-circle"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="transactions-today">
-                        <div class="section-header">
-                            <h3>Transações de Hoje</h3>
-                            <div class="header-actions">
-                                <button class="action-btn" onclick="filterTransactions()">
-                                    <i class="fas fa-filter"></i> Filtrar
-                                </button>
-                                <button class="action-btn" onclick="sortTransactions()">
-                                    <i class="fas fa-sort"></i> Ordenar
-                                </button>
-                            </div>
-                        </div>
-                        <div class="transactions-list">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Hora</th>
-                                        <th>Descrição</th>
-                                        <th>Categoria</th>
-                                        <th>Valor</th>
-                                        <th>Ações</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="dailyTransactionsTable">
-                                    <!-- Transações serão inseridas aqui -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Visão Mensal -->
-                <div class="dashboard-view" id="monthly">
-                    <div class="action-buttons">
-                        <button class="action-btn primary" onclick="openTransactionModal('monthly')">
-                            <i class="fas fa-plus"></i> Nova Transação
-                        </button>
-                        <button class="action-btn" onclick="setBudget()">
-                            <i class="fas fa-sliders-h"></i> Definir Orçamento
-                        </button>
-                        <button class="action-btn" onclick="exportMonthlyReport()">
-                            <i class="fas fa-file-export"></i> Exportar Relatório
-                        </button>
-                    </div>
-
-                    <div class="month-navigator">
-                        <button class="nav-btn" onclick="previousMonth()">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <h3 id="currentMonth">Janeiro 2024</h3>
-                        <button class="nav-btn" onclick="nextMonth()">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                    </div>
-
-                    <div class="cards">
-                        <div class="card">
-                            <h3>Total do Mês</h3>
-                            <p class="balance" id="monthlyTotal">R$ 0,00</p>
-                            <small class="comparison">vs. R$ 3.500,00 mês anterior</small>
-                            <div class="card-actions">
-                                <button class="card-btn" onclick="showMonthlyComparison()">
-                                    <i class="fas fa-chart-bar"></i>
-                                </button>
-                                <button class="card-btn" onclick="showMonthlyDetails()">
-                                    <i class="fas fa-info-circle"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <h3>Gastos do Mês</h3>
-                            <p class="expenses" id="monthlyExpenses">R$ 0,00</p>
-                            <div class="budget-indicator">
-                                <div class="progress-bar">
-                                    <div class="progress" style="width: 75%"></div>
-                                </div>
-                                <small>75% do orçamento mensal</small>
-                            </div>
-                            <div class="card-actions">
-                                <button class="card-btn" onclick="setMonthlyBudget()">
-                                    <i class="fas fa-cog"></i>
-                                </button>
-                                <button class="card-btn" onclick="showMonthlyExpenseDetails()">
-                                    <i class="fas fa-list"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <h3>Receitas do Mês</h3>
-                            <p class="income" id="monthlyIncome">R$ 0,00</p>
-                            <div class="card-actions">
-                                <button class="card-btn" onclick="addMonthlyIncome()">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                                <button class="card-btn" onclick="showMonthlyIncomeDetails()">
-                                    <i class="fas fa-list"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="charts-container">
-                        <div class="chart-card">
-                            <h3>Gastos por Categoria</h3>
-                            <canvas id="monthlyExpensesChart"></canvas>
-                            <div class="chart-actions">
-                                <button class="chart-btn" onclick="updateMonthlyChart('category')">Por Categoria</button>
-                                <button class="chart-btn" onclick="updateMonthlyChart('daily')">Por Dia</button>
-                            </div>
-                        </div>
-                        <div class="chart-card">
-                            <h3>Evolução Diária</h3>
-                            <canvas id="monthlyEvolutionChart"></canvas>
-                            <div class="chart-actions">
-                                <button class="chart-btn" onclick="compareWithLastMonth()">Comparar Meses</button>
-                                <button class="chart-btn" onclick="showTrends()">Ver Tendências</button>
-                            </div>
-                        </div>
+                    <div class="chart-card">
+                        <h3>Distribuição de Gastos</h3>
+                        <canvas id="expensesChart"></canvas>
                     </div>
                 </div>
             </section>
+
+            <!-- Visão Diária -->
+            <section id="daily" class="page">
+                <h2>Visão Diária</h2>
+                <div class="date-navigator">
+                    <button class="nav-btn" onclick="previousDay()">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <h3 id="currentDate">Hoje, 15 de Janeiro</h3>
+                    <button class="nav-btn" onclick="nextDay()">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+
+                <div class="cards">
+                    <div class="card">
+                        <h3>Gastos Hoje</h3>
+                        <p class="expenses" id="dailyExpenses">R$ 0,00</p>
+                        <div class="budget-indicator">
+                            <div class="progress-bar">
+                                <div class="progress" style="width: 65%"></div>
+                            </div>
+                            <small>65% do limite diário</small>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>Receitas Hoje</h3>
+                        <p class="income" id="dailyIncome">R$ 0,00</p>
+                    </div>
+                    <div class="card">
+                        <h3>Saldo do Dia</h3>
+                        <p class="balance" id="dailyBalance">R$ 0,00</p>
+                    </div>
+                </div>
+
+                <div class="transactions-today">
+                    <h3>Transações de Hoje</h3>
+                    <div class="transactions-list">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Hora</th>
+                                    <th>Descrição</th>
+                                    <th>Categoria</th>
+                                    <th>Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dailyTransactionsTable">
+                                <!-- Transações do dia serão inseridas aqui -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Visão Mensal -->
+            <section id="monthly" class="page">
+                <h2>Visão Mensal</h2>
+                <div class="month-navigator">
+                    <button class="nav-btn" onclick="previousMonth()">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <h3 id="currentMonth">Janeiro 2024</h3>
+                    <button class="nav-btn" onclick="nextMonth()">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+
+                <div class="cards">
+                    <div class="card">
+                        <h3>Total do Mês</h3>
+                        <p class="balance" id="monthlyTotal">R$ 0,00</p>
+                        <small class="comparison">vs. R$ 3.500,00 mês anterior</small>
+                    </div>
+                    <div class="card">
+                        <h3>Gastos do Mês</h3>
+                        <p class="expenses" id="monthlyExpenses">R$ 0,00</p>
+                        <div class="budget-indicator">
+                            <div class="progress-bar">
+                                <div class="progress" style="width: 75%"></div>
+                            </div>
+                            <small>75% do orçamento mensal</small>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>Receitas do Mês</h3>
+                        <p class="income" id="monthlyIncome">R$ 0,00</p>
+                    </div>
+                </div>
+
+                <div class="charts-container">
+                    <div class="chart-card">
+                        <h3>Gastos por Categoria</h3>
+                        <canvas id="monthlyExpensesChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Evolução Diária</h3>
+                        <canvas id="monthlyEvolutionChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Visão Anual -->
+            <section id="yearly" class="page">
+                <h2>Visão Anual</h2>
+                <div class="year-navigator">
+                    <button class="nav-btn" onclick="previousYear()">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <h3 id="currentYear">2024</h3>
+                    <button class="nav-btn" onclick="nextYear()">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+
+                <div class="cards">
+                    <div class="card">
+                        <h3>Total Acumulado</h3>
+                        <p class="balance" id="yearlyTotal">R$ 0,00</p>
+                        <small class="trend positive">+15% em relação ao ano anterior</small>
+                    </div>
+                    <div class="card">
+                        <h3>Média Mensal</h3>
+                        <p class="balance" id="monthlyAverage">R$ 0,00</p>
+                    </div>
+                    <div class="card">
+                        <h3>Projeção Anual</h3>
+                        <p class="projection" id="yearlyProjection">R$ 0,00</p>
+                    </div>
+                </div>
+
+                <div class="charts-container">
+                    <div class="chart-card">
+                        <h3>Evolução Mensal</h3>
+                        <canvas id="yearlyEvolutionChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Comparativo Anual</h3>
+                        <canvas id="yearlyComparisonChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- As outras seções (transactions, cards, investments, goals) continuam as mesmas -->
+
         </main>
     </div>
 
-    <!-- Modais -->
-    <!-- Modal de Transação -->
-    <div id="transactionModal" class="modal">
-        <!-- ... (mesmo código do modal anterior) ... -->
-    </div>
-
-    <!-- Modal de Conexão Bancária -->
-    <div id="bankConnectionModal" class="modal">
-        <div class="modal-content">
-            <h3>Conectar Banco</h3>
-            <div class="bank-list">
-                <div class="bank-item" onclick="startBankConnection('nubank')">
-                    <img src="bank-icons/nubank.png" alt="Nubank">
-                    <span>Nubank</span>
-                </div>
-                <div class="bank-item" onclick="startBankConnection('itau')">
-                    <img src="bank-icons/itau.png" alt="Itaú">
-                    <span>Itaú</span>
-                </div>
-                <div class="bank-item" onclick="startBankConnection('bradesco')">
-                    <img src="bank-icons/bradesco.png" alt="Bradesco">
-                    <span>Bradesco</span>
-                </div>
-                <div class="bank-item" onclick="startBankConnection('santander')">
-                    <img src="bank-icons/santander.png" alt="Santander">
-                    <span>Santander</span>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-cancel" onclick="closeBankModal()">Cancelar</button>
-            </div>
-        </div>
-    </div>
+    <!-- Seus modais existentes continuam aqui -->
 
     <script src="script.js"></script>
 </body>
